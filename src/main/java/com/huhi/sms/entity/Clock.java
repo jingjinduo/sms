@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -17,6 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author author
  * @since 2021-01-01
  */
+@Data
 @ApiModel(value="Clock对象", description="")
 @TableName("clock")
 public class Clock implements Serializable {
@@ -36,34 +38,6 @@ public class Clock implements Serializable {
     @ApiModelProperty(value = "打卡类型，0为签到，1为签退")
     private Integer clockStatus;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
-    public Integer getClockStatus() {
-        return clockStatus;
-    }
-
-    public void setClockStatus(Integer clockStatus) {
-        this.clockStatus = clockStatus;
-    }
 
     @Override
     public String toString() {

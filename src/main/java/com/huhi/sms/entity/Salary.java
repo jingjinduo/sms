@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -20,6 +21,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value="Salary对象", description="")
 @TableName("salary")
+@Data
 public class Salary implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,35 +38,6 @@ public class Salary implements Serializable {
 
     @ApiModelProperty(value = "工号")
     private String employeeId;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-    public BigDecimal getSalary() {
-        return salary;
-    }
-
-    public void setSalary(BigDecimal salary) {
-        this.salary = salary;
-    }
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
 
     @Override
     public String toString() {

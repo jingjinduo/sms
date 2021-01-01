@@ -1,9 +1,12 @@
 package com.huhi.sms.controller;
 
 
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,8 +16,10 @@ import org.springframework.stereotype.Controller;
  * @author author
  * @since 2021-01-01
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/employee")
+@Api(tags = "|employee|")
 public class EmployeeController {
 
 }
