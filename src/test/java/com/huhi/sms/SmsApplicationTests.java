@@ -35,8 +35,8 @@ class SmsApplicationTests {
     public void testCurd() {
         Clock clock=new Clock();
         clock.setClockStatus(1);
-        clock.setEmployeeId("21212");
-        //clock.setId("4141");
+        clock.setEmployeeId("123");
+        clock.setId("53455");
         clock.setTime(new Date());
         clockMapper.insert(clock);
         List<Clock> select = clockMapper.selectList(null);
