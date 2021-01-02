@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.Resource;
+
 /**
  * <p>
  *  前端控制器
@@ -26,7 +28,7 @@ import org.springframework.stereotype.Controller;
 @Api(tags = "|clock|")
 public class ClockController {
 
-    @Autowired
+    @Resource
     private ClockMapper clockMapper;
 
     @ApiOperation(value = "查询所有")
@@ -34,5 +36,11 @@ public class ClockController {
     //@RequiresPermissions("business:information:delete")
     public ResponseMessage submitApproval() throws Exception {
         return new ResponseMessage("402","成功",true,clockMapper.selectList(null));
+    }
+
+    //签到 or 签退
+    public ResponseMessage clockIn(){
+
+        return new ResponseMessage();
     }
 }
