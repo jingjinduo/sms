@@ -39,6 +39,11 @@ public class ResponseMessage<T> {
         logger.info(toString());
     }
 
+    public ResponseMessage(String message) {
+        this.respMsg = message;
+        logger.info(toString());
+    }
+
     public String getRespCode() {
         return respCode;
     }

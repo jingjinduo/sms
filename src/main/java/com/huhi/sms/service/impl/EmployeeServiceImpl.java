@@ -4,7 +4,10 @@ import com.huhi.sms.entity.Employee;
 import com.huhi.sms.dao.EmployeeMapper;
 import com.huhi.sms.service.EmployeeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -17,4 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> implements EmployeeService {
 
+    @Resource
+    private EmployeeMapper employeeMapper;
+
+    @Override
+    public Employee selectByEmployeeId(String employeeId) {
+        return employeeMapper.selectByEmployeeId(employeeId);
+    }
 }

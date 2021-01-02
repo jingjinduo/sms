@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ClockService extends IService<Clock> {
 
+    Boolean isContains(String employeeId, Integer clockStatus);
 }

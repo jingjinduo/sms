@@ -3,6 +3,9 @@ package com.huhi.sms.controller;
 
 import com.huhi.sms.dao.ClockMapper;
 import com.huhi.sms.entity.Clock;
+import com.huhi.sms.entity.Employee;
+import com.huhi.sms.service.ClockService;
+import com.huhi.sms.service.EmployeeService;
 import com.huhi.sms.util.ResponseMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
+import java.util.Date;
 
 /**
  * <p>
@@ -31,6 +36,12 @@ public class ClockController {
     @Resource
     private ClockMapper clockMapper;
 
+    @Resource
+    private EmployeeService employeeService;
+
+    @Resource
+    private ClockService clockService;
+
     @ApiOperation(value = "查询所有")
     @GetMapping("/all")
     //@RequiresPermissions("business:information:delete")
@@ -39,7 +50,25 @@ public class ClockController {
     }
 
     //签到 or 签退
-    public ResponseMessage clockIn(){
+    //同一天不能签到/签退两次
+    @GetMapping("/clock/{employeeId}")
+    public ResponseMessage clockIn(@PathParam("employeeId") String employeeId,
+                                   @PathParam("clockStatus") Integer clockStatus,
+                                   @PathParam("time") Date date){
+        //首先从前端返回的路径中获取employeeId，通过employeeId查询员工
+        //这里没写完！！！！！！！！！！！！！！！！下面的不对
+        Employee employee = employeeService.selectByEmployeeId(employeeId);
+        //先判断是否已经签到/签退
+        if(!clockService.isContains(employeeId, clockStatus)){
+            //将查到的员工id传给clock对象
+            Clock clock = new Clock();
+            clock.setId(employee.getId());
+            clock.setTime(new Date());
+            clock.setClockStatus(clockStatus);
+            clock.setEmployeeId(employeeId);
+            clockMapper.insert(clock);
+            return new ResponseMessage("打卡成功！");
+        }
 
         return new ResponseMessage();
     }

@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-01-01
  */
 public interface EmployeeService extends IService<Employee> {
-
+    Employee selectByEmployeeId(String employeeId);
 }
