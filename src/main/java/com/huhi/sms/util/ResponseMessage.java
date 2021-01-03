@@ -15,6 +15,10 @@ public class ResponseMessage<T> {
 
     private boolean ok;
 
+    public void setOk(boolean ok) {
+        this.ok = ok;
+    }
+
     public ResponseMessage() {
     }
 

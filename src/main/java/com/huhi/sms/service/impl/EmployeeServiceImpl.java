@@ -27,4 +27,10 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
     public Employee selectByEmployeeId(String employeeId) {
         return employeeMapper.selectByEmployeeId(employeeId);
     }
+
+    @Override
+    public Employee checkEmployee(String loginId, String password) {
+        Employee employee = employeeMapper.selectByLoginIdAndPassword(loginId, password);
+        return employee;
+    }
 }

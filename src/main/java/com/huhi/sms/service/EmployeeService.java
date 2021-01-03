@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface EmployeeService extends IService<Employee> {
     Employee selectByEmployeeId(String employeeId);
+
+    Employee checkEmployee(String loginId, String password);
 }
