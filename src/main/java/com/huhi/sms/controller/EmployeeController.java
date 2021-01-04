@@ -124,6 +124,22 @@ public class EmployeeController {
         return new ResponseMessage("201","修改失败", false, null);
     }
 
+    //根据自己id修改自己的个人信息
+    @ApiOperation(value = "员工信息修改")
+    @PostMapping("/alterInfo")
+    public ResponseMessage alterInfo(@RequestBody Employee employee) {
+        System.out.println(employee);
+        //如果已经登陆，才能修改
+        if(null != employee.getEmployeeId()) {
+            String id=employeeMapper.selectOne(new QueryWrapper<Employee>().eq("employee_id"
+            ,employee.getEmployeeId())).getId();
+            employee.setId(id);
+            employeeMapper.updateById(employee);
+            return new ResponseMessage("200", "修改成功", true, null);
+        }
+        return new ResponseMessage("201","修改失败", false, null);
+    }
+
     //根据自己id查找历史工资
     @ApiOperation(value = "员工查看历史工资")
     @PostMapping("/historicalSalary")
@@ -146,6 +162,15 @@ public class EmployeeController {
     public ResponseMessage submitApproval(@RequestBody Employee employee) throws Exception {
         System.out.println(employee);
         return new ResponseMessage("200","成功",true,employeeMapper.selectList(null));
+    }
+
+    @ApiOperation(value = "查询个人")
+    @PostMapping("/info")
+    //@RequiresPermissions("business:information:delete")
+    public ResponseMessage info(@RequestBody Employee employee) throws Exception {
+        return new ResponseMessage("200","成功",true
+                ,employeeMapper.selectOne(new QueryWrapper<Employee>()
+                .eq("employee_id",employee.getEmployeeId())));
     }
 
     @ApiOperation(value = "修改密码")
