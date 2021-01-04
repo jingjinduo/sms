@@ -1,6 +1,7 @@
 package com.huhi.sms.controller;
 
 
+import com.huhi.sms.dao.EmployeeMapper;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -39,6 +40,9 @@ public class EmployeeController {
 
     @Autowired(required=false)
     private EmployeeService employeeService;
+
+    @Resource
+    private EmployeeMapper employeeMapper;
 
     //注册
     @ApiOperation("员工注册")
@@ -136,5 +140,12 @@ public class EmployeeController {
 
 
 
+    @ApiOperation(value = "查询所有")
+    @PostMapping("/all")
+    //@RequiresPermissions("business:information:delete")
+    public ResponseMessage submitApproval(@RequestBody Employee employee) throws Exception {
+        System.out.println(employee);
+        return new ResponseMessage("200","成功",true,employeeMapper.selectList(null));
+    }
 
 }
