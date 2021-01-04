@@ -58,6 +58,7 @@ public class SalaryController {
     public ResponseMessage between(@RequestBody BetweenVO betweenVO) throws Exception {
         Date start=DateFormatUtil.string2Date(betweenVO.getStartDate());
         Date end=DateFormatUtil.string2Date(betweenVO.getEndDate());
+        System.out.println(betweenVO.getStartDate());
         if(start.after(end)){
             return new ResponseMessage("201","时间前后冲突",false
                     ,null);
