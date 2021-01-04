@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -147,4 +148,22 @@ public class EmployeeController {
         return new ResponseMessage("200","成功",true,employeeMapper.selectList(null));
     }
 
+    @ApiOperation(value = "修改密码")
+    @PostMapping("/alterPassword")
+    public ResponseMessage alterPassword(@RequestBody Employee employee,@RequestParam("newPassword") String newPassword) {
+        //如果有登录才能注销
+        System.out.println(employee);
+        employee=employeeMapper.selectOne(new QueryWrapper<Employee>()
+                .eq("employee_id",employee.getEmployeeId())
+                .eq("password",employee.getPassword()));
+        System.out.println(employee);
+        if(null != employee){
+            employee.setPassword(newPassword);
+            System.out.println(employee);
+            employeeMapper.updateById(employee);
+            return new ResponseMessage("200","修改成功",true
+                    ,null);
+        }
+        return new ResponseMessage("201","修改失败", false, null);
+    }
 }
