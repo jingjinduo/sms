@@ -73,10 +73,9 @@ public class EmployeeController {
         if (null != emp) {
             //相当于可以查到用户，进入用户中心页面,最好直接将密码设为Null,防止别人拿到
             emp.setPassword(null);
-            Map<String, Object> map = new HashMap<>();
-            map.put("employeeId", emp.getId());
-            JSONObject json = new JSONObject(map);
-            return new ResponseMessage("200","登陆成功",true, json);
+            Employee res = new Employee();
+            res.setEmployeeId(emp.getEmployeeId());
+            return new ResponseMessage("200","登陆成功",true,res);
         }
         //查不到用户，重定向回登陆页面
         return new ResponseMessage("201","登陆失败", false, null);
