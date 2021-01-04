@@ -16,13 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import javax.annotation.Resource;
-import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,6 +40,8 @@ public class EmployeeController {
 
     @Resource
     private EmployeeMapper employeeMapper;
+
+
 
     //注册
     @ApiOperation("员工注册")
