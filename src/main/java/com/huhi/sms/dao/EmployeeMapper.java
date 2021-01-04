@@ -14,9 +14,6 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface EmployeeMapper extends BaseMapper<Employee> {
 
-    //通过EmployeeId查找员工
-    @Select("select * from employee where employee_id = ${employeeId}")
-    Employee selectByEmployeeId(String employeeId);
 
 
     @Select("select * from employee where login_id = ${loginId} and password = ${password}")

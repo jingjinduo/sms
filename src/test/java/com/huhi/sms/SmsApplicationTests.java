@@ -5,6 +5,7 @@ import com.huhi.sms.dao.EmployeeMapper;
 import com.huhi.sms.entity.Clock;
 import com.huhi.sms.entity.Employee;
 import com.huhi.sms.service.EmployeeService;
+import com.huhi.sms.service.impl.EmployeeServiceImpl;
 import io.swagger.models.auth.In;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -65,5 +66,7 @@ class SmsApplicationTests {
         val employee = employeeService.selectByEmployeeId("9527");
         System.out.println(employee.toString());
     }
+
+
 
 }

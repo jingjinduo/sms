@@ -33,13 +33,13 @@ import java.util.Date;
 @Api(tags = "|clock|")
 public class ClockController {
 
-    @Resource
+    @Autowired(required=false)
     private ClockMapper clockMapper;
 
-    @Resource
+    @Autowired(required=false)
     private EmployeeService employeeService;
 
-    @Resource
+    @Autowired(required=false)
     private ClockService clockService;
 
     @ApiOperation(value = "查询所有")
