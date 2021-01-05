@@ -1,25 +1,31 @@
 package com.huhi.sms.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.huhi.sms.dao.ClockMapper;
 import com.huhi.sms.dao.EmployeeMapper;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.huhi.sms.dao.SalaryMapper;
+import com.huhi.sms.entity.Clock;
 import com.huhi.sms.entity.Employee;
 import com.huhi.sms.entity.Salary;
 import com.huhi.sms.service.EmployeeService;
 import com.huhi.sms.util.ResponseMessage;
+import com.huhi.sms.vo.EmployeeSalary;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * <p>
@@ -40,6 +46,12 @@ public class EmployeeController {
 
     @Resource
     private EmployeeMapper employeeMapper;
+
+    @Resource
+    private ClockMapper clockMapper;
+
+    @Resource
+    private SalaryMapper salaryMapper;
 
 
 
@@ -66,7 +78,7 @@ public class EmployeeController {
 
     //登录
     @ApiOperation(value = "员工登录")
-    @PostMapping("/empLogin")
+    @PostMapping("/login")
     public ResponseMessage empLogin(@RequestBody Employee employee) {
         Employee emp = employeeService.checkEmployee(employee.getLoginId(), employee.getPassword());
         if (null != emp) {
@@ -122,12 +134,19 @@ public class EmployeeController {
         return new ResponseMessage("201","修改失败", false, null);
     }
 
+    @ApiOperation(value = "新增员工")
+    @PostMapping("/create")
+    public ResponseMessage newOne(@RequestBody Employee employee) {
+        System.out.println(employee);
+        employeeMapper.insert(employee);
+        return new ResponseMessage("200", "注册成功", true, null);
+    }
+
     //根据自己id修改自己的个人信息
     @ApiOperation(value = "员工信息修改")
     @PostMapping("/alterInfo")
     public ResponseMessage alterInfo(@RequestBody Employee employee) {
         System.out.println(employee);
-        //如果已经登陆，才能修改
         if(null != employee.getEmployeeId()) {
             String id=employeeMapper.selectOne(new QueryWrapper<Employee>().eq("employee_id"
             ,employee.getEmployeeId())).getId();
@@ -136,6 +155,19 @@ public class EmployeeController {
             return new ResponseMessage("200", "修改成功", true, null);
         }
         return new ResponseMessage("201","修改失败", false, null);
+    }
+
+    @ApiOperation(value = "删除员工")
+    @PostMapping("/delete")
+    public ResponseMessage del(@RequestBody Employee employee) {
+        String employeeId=employee.getEmployeeId();
+        System.out.println(employee);
+        Map<String,Object>map=new HashMap<>();
+        map.put("employee_id",employeeId);
+        employeeMapper.deleteByMap(map);
+        clockMapper.deleteByMap(map);
+        salaryMapper.deleteByMap(map);
+        return new ResponseMessage("200", "修改成功", true, null);
     }
 
     //根据自己id查找历史工资
@@ -160,6 +192,31 @@ public class EmployeeController {
     public ResponseMessage submitApproval(@RequestBody Employee employee) throws Exception {
         System.out.println(employee);
         return new ResponseMessage("200","成功",true,employeeMapper.selectList(null));
+    }
+
+    @ApiOperation(value = "员工管理分页查询")
+    @PostMapping("/page")
+    //@RequiresPermissions("business:information:delete")
+    public ResponseMessage page(@RequestParam("employeeId")String employeeId
+            ,@RequestParam("currentPage")int currentPage
+            ,@RequestParam("pageSize")int pageSize) throws Exception {
+        System.out.println(employeeId);
+
+        @Data
+        class VO{
+            List<Employee> list;
+            Integer total;
+        };
+        VO vo=new VO();
+        QueryWrapper<Employee>queryWrapper=new QueryWrapper<>();
+        if(employeeId.length()!=0)
+            queryWrapper.eq("employee_id",employeeId);
+        Page<Employee> page = new Page<>(currentPage,pageSize);  // 查询第1页，每页返回5条
+        IPage<Employee> iPage = employeeMapper.selectPage(page,queryWrapper);
+        vo.list=iPage.getRecords();
+        vo.total=employeeMapper.selectCount(queryWrapper);
+        return new ResponseMessage("200","成功",true
+                ,vo);
     }
 
     @ApiOperation(value = "查询个人")

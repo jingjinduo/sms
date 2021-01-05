@@ -7,6 +7,7 @@ import com.huhi.sms.entity.Clock;
 import com.huhi.sms.entity.Employee;
 import com.huhi.sms.service.ClockService;
 import com.huhi.sms.service.EmployeeService;
+import com.huhi.sms.util.ClockStatus;
 import com.huhi.sms.util.ResponseMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,7 +38,7 @@ import java.util.Date;
 @Api(tags = "|clock|")
 public class ClockController {
 
-    @Autowired(required=false)
+    @Autowired
     private ClockMapper clockMapper;
 
     @Autowired(required=false)
@@ -52,11 +54,74 @@ public class ClockController {
         String pagesize;
     }
 
+    //签到 or 签退
+    //同一天不能签到/签退两次
+    @ApiOperation(value = "更新打卡按钮状态")
+    @GetMapping("/update")
+    public ResponseMessage update(@RequestParam("employeeId") String employeeId) throws ParseException {
+        Date date=new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String day=formatter.format(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//注意月份是MM
+        Date dayStart = sdf.parse(day+" 00:00:00");
+        Date dayEnd = sdf.parse(day+" 23:59:59");
+        Clock now=clockMapper.selectOne(new QueryWrapper<Clock>()
+                .between("time",dayStart,dayEnd)
+                .eq("employee_id",employeeId));
+        Clock tem=new Clock();
+        tem.setEmployeeId(employeeId);
+        tem.setTime(new Date());
+        if(now==null){
+            tem.setClockStatus(ClockStatus.DEFUALT.getStatenum());
+            clockMapper.insert(tem);
+            return new ResponseMessage("200","成功",true,ClockStatus.DEFUALT.getStatenum());
+        }
+        else {
+            if(now.getClockStatus()==ClockStatus.SIGNIN.getStatenum()){
+                return new ResponseMessage("200","成功",true,ClockStatus.SIGNIN.getStatenum());
+            }
+            else if(now.getClockStatus()==ClockStatus.COMPLETE.getStatenum()){
+                return new ResponseMessage("200","成功",true,ClockStatus.COMPLETE.getStatenum());
+            }
+        }
+        return new ResponseMessage("201","失败",true,null);
+    }
+
+    //签到 or 签退
+    //同一天不能签到/签退两次
+    @ApiOperation(value = "签到/签退")
+    @GetMapping("")
+    public ResponseMessage clockIn(@RequestParam("employeeId") String employeeId) throws ParseException {
+        Date date=new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String day=formatter.format(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//注意月份是MM
+        Date dayStart = sdf.parse(day+" 00:00:00");
+        Date dayEnd = sdf.parse(day+" 23:59:59");
+/*
+        Date signin=sdf.parse(day+" 8:0:0");
+        Date signout=sdf.parse(day+" 17:0:0");*/
+        Clock now=clockMapper.selectOne(new QueryWrapper<Clock>()
+                .between("time",dayStart,dayEnd)
+                .eq("employee_id",employeeId));
+
+        if(now.getClockStatus()==ClockStatus.DEFUALT.getStatenum()){
+            now.setClockStatus(ClockStatus.SIGNIN.getStatenum());
+            clockMapper.updateById(now);
+            return new ResponseMessage("200","成功",true,ClockStatus.SIGNIN.getStatenum());
+        }
+        else if(now.getClockStatus()==ClockStatus.SIGNIN.getStatenum()) {
+            now.setClockStatus(ClockStatus.COMPLETE.getStatenum());
+            clockMapper.updateById(now);
+            return new ResponseMessage("200","成功",true,ClockStatus.COMPLETE.getStatenum());
+        }
+
+        return new ResponseMessage("201","失败",false,null);
+    }
     @ApiOperation(value = "当日是否打卡")
-    @PostMapping("/check")
+    @GetMapping("/check")
     //@RequiresPermissions("business:information:delete")
     public ResponseMessage check(@RequestParam("employeeId")String eid,@RequestParam("day")String day) throws Exception {
-        System.out.println(eid+":"+day);
         if(day.length()>10){
             day=day.substring(0,10);
         }
@@ -66,7 +131,8 @@ public class ClockController {
         QueryWrapper<Clock>queryWrapper=new QueryWrapper<>();
         queryWrapper.between("time",dayStart,dayEnd);
         queryWrapper.eq("employee_id",eid);
-        if(clockMapper.selectCount(queryWrapper)==2)
+        Clock tem=clockMapper.selectOne(queryWrapper);
+        if((tem!=null)&&(tem.getClockStatus()== ClockStatus.COMPLETE.getStatenum()))
             return new ResponseMessage("200","成功",true,null);
         else
             return new ResponseMessage("201","失败",false,null);
@@ -79,6 +145,7 @@ public class ClockController {
         System.out.println(vo);
         return new ResponseMessage("200","成功",true,clockMapper.selectList(null));
     }
+
 
     //签到 or 签退
     //同一天不能签到/签退两次

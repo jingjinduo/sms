@@ -1,4 +1,5 @@
 # datasource config
+
 spring:
   profiles:
     active: jjd

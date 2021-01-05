@@ -1,8 +1,10 @@
 package com.huhi.sms.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.huhi.sms.dao.EmployeeMapper;
+import com.huhi.sms.dao.ManagerMapper;
 import com.huhi.sms.entity.Employee;
 import com.huhi.sms.entity.Manager;
 import com.huhi.sms.service.EmployeeService;
@@ -12,15 +14,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -42,6 +43,27 @@ public class ManagerController {
     @Autowired(required=false)
     private Manager manager;
 
+    @Autowired
+    private ManagerMapper managerMapper;
+
+    //登录
+    @ApiOperation(value = "员工登录")
+    @PostMapping("/login")
+    public ResponseMessage manageLogin(@RequestBody Manager manager) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("login_id",manager.getLoginId());
+        map.put("password", manager.getPassword());
+        manager = managerMapper.selectOne(new QueryWrapper<Manager>().allEq(map));
+        if (null != manager) {
+            //相当于可以查到用户，进入用户中心页面,最好直接将密码设为Null,防止别人拿到
+            manager.setPassword(null);
+            Manager tem=new Manager();
+            tem.setLoginId(manager.getLoginId());
+            return new ResponseMessage("200","登陆成功",true,tem);
+        }
+        //查不到用户，重定向回登陆页面
+        return new ResponseMessage("201","登陆失败", false, null);
+    }
     //管理员登录,判断是高级管理员还是普通管理员
     public ResponseMessage magLogin(){
         return new ResponseMessage();
