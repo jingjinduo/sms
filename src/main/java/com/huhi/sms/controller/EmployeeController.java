@@ -86,9 +86,9 @@ public class EmployeeController {
     public ResponseMessage empLogout(@RequestBody Employee employee) {
         //如果有登录才能注销
         if(null != employee){
-            JSONObject jsonObject = new JSONObject();
             Map<String, Object> map = new HashMap<>();
             map.put("loginId", null);
+            JSONObject jsonObject = new JSONObject(map);
             return new ResponseMessage("200","注销成功",true, jsonObject);
         }
         return new ResponseMessage("201","注销失败", false, null);
@@ -159,6 +159,7 @@ public class EmployeeController {
     //@RequiresPermissions("business:information:delete")
     public ResponseMessage submitApproval(@RequestBody Employee employee) throws Exception {
         System.out.println(employee);
+        //测试冲突
         return new ResponseMessage("200","成功",true,employeeMapper.selectList(null));
     }
 

@@ -82,24 +82,8 @@ public class ClockController {
 
     //签到 or 签退
     //同一天不能签到/签退两次
-    @GetMapping("/clock/{employeeId}")
-    public ResponseMessage clockIn(@PathParam("employeeId") String employeeId,
-                                   @PathParam("clockStatus") Integer clockStatus,
-                                   @PathParam("time") Date date){
-        //首先从前端返回的路径中获取employeeId，通过employeeId查询员工
-        //这里没写完！！！！！！！！！！！！！！！！下面的不对
-        Employee employee = employeeService.selectByEmployeeId(employeeId);
-        //先判断是否已经签到/签退
-        if(!clockService.isContains(employeeId, clockStatus)){
-            //将查到的员工id传给clock对象
-            Clock clock = new Clock();
-            clock.setId(employee.getId());
-            clock.setTime(new Date());
-            clock.setClockStatus(clockStatus);
-            clock.setEmployeeId(employeeId);
-            clockMapper.insert(clock);
-            return new ResponseMessage("打卡成功！");
-        }
+    @GetMapping("/clock")
+    public ResponseMessage clockIn(){
 
         return new ResponseMessage();
     }

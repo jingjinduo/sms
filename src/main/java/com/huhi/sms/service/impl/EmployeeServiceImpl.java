@@ -62,6 +62,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
 
     @Override
     public Page<Employee> findAllEmp(Page<Employee> page) {
+
         return employeeMapper.selectPage(page, null);
     }
 
@@ -85,5 +86,6 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         queryWrapper.eq("employee_id", employeeId);
         return salaryMapper.selectPage(page, queryWrapper);
     }
+
 
 }

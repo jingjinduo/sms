@@ -35,7 +35,7 @@ import java.util.Date;
 @Api(tags = "|salary|")
 public class SalaryController {
 
-    @Autowired
+    @Autowired(required = false)
     SalaryMapper salaryMapper;
     //查询工资
     public ResponseMessage historicalSalary(){
